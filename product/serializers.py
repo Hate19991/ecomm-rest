@@ -26,6 +26,7 @@ class BrandSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
         instance.profile_image = validated_data.get("profile_image", instance.profile_image)
+        return instance
         
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:

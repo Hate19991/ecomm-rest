@@ -5,7 +5,7 @@ import uuid
 
 # Create your models here.
 class Cart(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(Customer, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
 
@@ -17,6 +17,7 @@ class Cart(models.Model):
         return f"Cart of {self.user.username}"
     
 class CartItem(models.Model):
+    id = models.AutoField(primary_key=True)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)

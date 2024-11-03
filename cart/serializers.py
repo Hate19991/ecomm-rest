@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import *
+from .models import Cart, CartItem
+from product.models import Product
 
 """GET Serializer"""
 
@@ -17,8 +18,8 @@ class CartItemSerializer(serializers.ModelSerializer):
 """POST Serializer"""
 
 class CreateCartSerializer(serializers.ModelSerializer):
-    cart = serializers.SlugField(slug_field='id', queryset=Cart.objects.all())
-    product = serializers.SlugField(slug_field='name', queryset=Product.objects.all())
+    cart = serializers.SlugRelatedField(slug_field='id', queryset=Cart.objects.all())
+    product = serializers.SlugRelatedField(slug_field='name', queryset=Product.objects.all())
 
     class Meta:
         model = CartItem
@@ -26,6 +27,22 @@ class CreateCartSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return CartItem.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.quantity = validated_data.get('quantity', instance.quantity)
+        return instance
+    
+class CreateCartItemSerializer(serializers.ModelSerializer):
+    cartItem = serializers.SlugRelatedField(slug_field='quantity', queryset=CartItem.objects.all())
+    product = serializers.SlugRelatedField(slug_field='name', queryset=Product.objects.all())
+
+    class Meta:
+        model = CartItem
+        fields = ['cart', 'product' , 'quantity']
+        
+        def create(self, validated_data):
+            return CartItem.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
